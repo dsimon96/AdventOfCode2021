@@ -1,7 +1,7 @@
 import itertools
 import sys
 from collections import deque
-from typing import Deque, Generator
+from typing import Deque, Generator, Iterable
 import click
 
 
@@ -15,7 +15,7 @@ def get_input() -> Generator[int, None, None]:
         yield int(line)
 
 
-def count_increases(inputs: Generator[int, None, None]) -> int:
+def count_increases(inputs: Iterable[int]) -> int:
     return sum(1 for prev, cur in itertools.pairwise(inputs) if cur > prev)
 
 
@@ -24,9 +24,9 @@ def part1():
     print(count_increases(get_input()))
 
 
-def get_three_sums() -> Generator[int, None, None]:
+def get_three_sums(inputs: Iterable[int]) -> Generator[int, None, None]:
     window: Deque[int] = deque()
-    for number in get_input():
+    for number in inputs:
         window.append(number)
         if len(window) < 3:
             continue
@@ -37,7 +37,7 @@ def get_three_sums() -> Generator[int, None, None]:
 
 @main.command()
 def part2():
-    print(count_increases(get_three_sums()))
+    print(count_increases(get_three_sums(get_input())))
 
 
 if __name__ == "__main__":
