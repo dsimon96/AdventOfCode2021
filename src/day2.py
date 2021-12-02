@@ -41,15 +41,19 @@ class PositionAndAim:
 
 
 def update_position(pos: Position, command: Command) -> Position:
-    match command.direction:
-        case Direction.FORWARD:
-            return replace(pos, horizontal_pos=pos.horizontal_pos+command.units)
-        case Direction.UP:
-            return replace(pos, depth=pos.depth-command.units)
-        case Direction.DOWN:
-            return replace(pos, depth=pos.depth+command.units)
+    match command:
+        case Command(Direction.FORWARD, units):
+            return replace(pos, horizontal_pos=pos.horizontal_pos+units)
+        case Command(Direction.UP, units):
+            return replace(pos, depth=pos.depth-units)
+        case Command(Direction.DOWN, units):
+            return replace(pos, depth=pos.depth+units)
+        case _:
+            raise ValueError
+
 
 State = TypeVar('State')
+
 
 def do_command_sequence(
     commands: Iterable[Command],
@@ -61,28 +65,38 @@ def do_command_sequence(
         state = update_fn(state, command)
     return state
 
+
 @main.command()
 def part1():
     pos = do_command_sequence(get_input(), Position(), update_position)
     print(pos.depth * pos.horizontal_pos)
 
-def update_position_and_aim(pos_and_aim: PositionAndAim, command: Command) -> PositionAndAim:
-    match command.direction:
-        case Direction.FORWARD:
-            pos = pos_and_aim.position
+
+def update_position_and_aim(
+    pos_and_aim: PositionAndAim,
+    command: Command
+) -> PositionAndAim:
+    pos = pos_and_aim.position
+    aim = pos_and_aim.aim
+    match command:
+        case Command(Direction.FORWARD, units):
             new_pos = replace(pos,
-                horizontal_pos=pos.horizontal_pos+command.units,
-                depth=pos.depth+pos_and_aim.aim*command.units)
+                              horizontal_pos=pos.horizontal_pos+units,
+                              depth=pos.depth+aim*units)
             return replace(pos_and_aim, position=new_pos)
-        case Direction.UP:
-            return replace(pos_and_aim, aim=pos_and_aim.aim-command.units)
-        case Direction.DOWN:
-            return replace(pos_and_aim, aim=pos_and_aim.aim+command.units)
+        case Command(Direction.UP, units):
+            return replace(pos_and_aim, aim=aim-units)
+        case Command(Direction.DOWN, units):
+            return replace(pos_and_aim, aim=aim+units)
+        case _:
+            raise ValueError
+
 
 @main.command()
 def part2():
-    pos_and_aim = do_command_sequence(get_input(), PositionAndAim(), update_position_and_aim)
-    print(pos_and_aim.position.depth * pos_and_aim.position.horizontal_pos)
+    pos = do_command_sequence(
+        get_input(), PositionAndAim(), update_position_and_aim).position
+    print(pos.depth * pos.horizontal_pos)
 
 
 if __name__ == "__main__":
