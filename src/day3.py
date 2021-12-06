@@ -1,5 +1,6 @@
 import sys
-from typing import Collection, Generator, Iterable, List, Optional, Sequence, cast
+from typing import (Collection, Generator, Iterable,
+                    Optional, Sequence, cast)
 import click
 
 
@@ -12,8 +13,8 @@ BitSequence = Sequence[int]
 
 
 def get_bit_sequences() -> Generator[BitSequence, None, None]:
-    for line in sys.stdin.readlines():
-        bit_seq: List[int] = []
+    for line in sys.stdin:
+        bit_seq: list[int] = []
         for char in line.rstrip():
             bit_seq.append(int(char))
         yield bit_seq

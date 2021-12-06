@@ -23,7 +23,7 @@ class Command:
 
 
 def get_input() -> Generator[Command, None, None]:
-    for line in sys.stdin.readlines():
+    for line in sys.stdin:
         dir_s, units_s = line.split()
         yield Command(direction=Direction[dir_s.upper()], units=int(units_s))
 

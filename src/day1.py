@@ -11,7 +11,7 @@ def main():
 
 
 def get_input() -> Generator[int, None, None]:
-    for line in sys.stdin.readlines():
+    for line in sys.stdin:
         yield int(line)
 
 
