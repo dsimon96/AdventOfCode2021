@@ -1,9 +1,8 @@
-from typing import Generator, Iterable
+from typing import Generator, Iterable, TextIO
 import click
 import sys
 from collections import defaultdict
 from dataclasses import dataclass
-from io import TextIOBase
 
 
 @click.group()
@@ -54,7 +53,7 @@ def parse_point(s: str) -> Point:
     return Point(x=int(x_str), y=int(y_str))
 
 
-def get_lines(input: TextIOBase):
+def get_lines(input: TextIO):
     for line_str in input:
         tokens = line_str.split()
         yield Line(start=parse_point(tokens[0]), end=parse_point(tokens[2]))
